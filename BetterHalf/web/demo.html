@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Better Half – two-phone test</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#06040c;color:#f5f1ff;min-height:100vh;padding:18px 18px 30px;background-image:radial-gradient(circle at 15% 20%,rgba(255,77,141,.16),transparent 40%),radial-gradient(circle at 85% 80%,rgba(99,102,241,.18),transparent 45%)}
+h1{font-family:Outfit;font-size:24px;text-align:center;display:flex;gap:10px;align-items:center;justify-content:center}
+.sub{color:#a69dc6;font-size:13px;text-align:center;margin:4px 0 14px}
+.wrap{display:flex;gap:34px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.col{display:flex;flex-direction:column;align-items:center;gap:10px}
+.lbl{font-family:Outfit;font-weight:700;font-size:16px;display:flex;gap:8px;align-items:center}
+.lbl i{width:10px;height:10px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399}
+.lbl i.off{background:#64748b;box-shadow:none}
+.frame{width:390px;height:820px;border-radius:50px;padding:11px;background:#000;box-shadow:0 0 0 1.5px #3a2f5c,0 40px 80px rgba(80,40,160,.45);position:relative}
+.frame iframe{width:100%;height:100%;border:0;border-radius:40px;background:#0a0713}
+.frame .isl{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:110px;height:30px;border-radius:20px;background:#000;z-index:2;pointer-events:none}
+.off-cover{position:absolute;inset:11px;border-radius:40px;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#a69dc6;font-size:14px;z-index:3}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+button{font-family:inherit;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-weight:700;font-size:12.5px;padding:9px 13px;border-radius:12px;cursor:pointer}
+button:hover{background:rgba(168,85,247,.25)}
+.log{width:390px;max-height:150px;overflow:auto;font-size:12px;color:#d9d2f0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:8px 10px}
+.log div{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.top{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.tip{max-width:860px;margin:0 auto 16px;font-size:13px;color:#cfc6ea;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 16px;line-height:1.55}
+</style>
+</head>
+<body>
+<h1><svg width="30" height="30" viewBox="0 0 120 120"><path d="M58 104 C40 92 14 74 14 46 C14 30 26 20 38 20 C48 20 55 26 58 32 Z" fill="#ff4d8d"/><path d="M62 104 C80 92 106 74 106 46 C106 30 94 20 82 20 C72 20 65 26 62 32 Z" fill="#8b5cf6"/></svg>Better Half · two-phone test</h1>
+<div class="sub">Both phones are the real app and sync with each other through this browser. Everything you do on one shows up on the other.</div>
+<div class="tip"><b>How to test:</b> sign in on both phones (choose <i>Man</i> on the left and <i>Woman</i> on the right). On the left, copy the 6-digit code. On the right, choose <b>I have a code</b> and enter it. After that, try reactions on Home, chat, calls, games, the calendar and routines. Turn a phone <b>off</b> to see actions queue up and arrive when it comes back on.</div>
+<div class="top"><button onclick="resetAll()">↺ Reset everything</button></div>
+<div class="wrap">
+  <div class="col">
+    <div class="lbl"><i id="dHim"></i>His phone</div>
+    <div class="frame"><div class="isl"></div><iframe id="fHim" src="index.html?as=him" allow="camera; microphone; autoplay; clipboard-write; geolocation"></iframe><div class="off-cover" id="cHim">📴<span>Phone off · messages wait for it</span></div></div>
+    <div class="btns"><button onclick="power('Him')" id="bHim">Turn off</button><button onclick="reload('Him')">Restart app</button></div>
+    <div class="log" id="lHim"><div>Notifications he receives appear here</div></div>
+  </div>
+  <div class="col">
+    <div class="lbl"><i id="dHer"></i>Her phone</div>
+    <div class="frame"><div class="isl"></div><iframe id="fHer" src="index.html?as=her" allow="camera; microphone; autoplay; clipboard-write; geolocation"></iframe><div class="off-cover" id="cHer">📴<span>Phone off · messages wait for it</span></div></div>
+    <div class="btns"><button onclick="power('Her')" id="bHer">Turn off</button><button onclick="reload('Her')">Restart app</button></div>
+    <div class="log" id="lHer"><div>Notifications she receives appear here</div></div>
+  </div>
+</div>
+<script>
+const off={Him:false,Her:false};
+function power(w){ off[w]=!off[w]; document.getElementById('c'+w).style.display=off[w]?'flex':'none'; document.getElementById('b'+w).textContent=off[w]?'Turn on':'Turn off'; document.getElementById('d'+w).classList.toggle('off',off[w]); document.getElementById('f'+w).contentWindow.postMessage({bhCmd:'offline',v:off[w]},'*'); }
+function reload(w){ document.getElementById('f'+w).src=document.getElementById('f'+w).src; }
+function resetAll(){ if(!confirm('Clear all test data on both phones?')) return; Object.keys(localStorage).filter(k=>k.startsWith('bh')).forEach(k=>localStorage.removeItem(k)); reload('Him'); reload('Her'); ['Him','Her'].forEach(w=>{ if(off[w]) power(w); document.getElementById('l'+w).innerHTML=''; }); }
+window.addEventListener('message',e=>{ const d=e.data||{}; if(d.bh==='notif'){ const w=d.role==='her'?'Her':'Him'; const l=document.getElementById('l'+w); const t=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'}); l.insertAdjacentHTML('afterbegin',`<div><b>${d.title.replace(/</g,'&lt;')}</b> · ${(d.text||'').replace(/</g,'&lt;')} <span style="opacity:.5">${t}</span></div>`); } });
+</script>
+</body>
+</html>

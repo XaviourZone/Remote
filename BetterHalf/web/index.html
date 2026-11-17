@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0713">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Better Half">
+<title>Better Half</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="gstroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff4d8d"/><stop offset=".55" stop-color="#a855f7"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs></svg>
+<div class="phone" id="phone">
+  <div class="aur"></div>
+  <div class="notif" id="notif"><div class="ic" id="nIc"></div><div style="flex:1;min-width:0"><div class="t">Better Half · now</div><b id="nTitle"></b><div class="x" id="nText"></div></div></div>
+  <div class="toast" id="toast"></div>
+  <div class="fx" id="fx"></div>
+  <div class="ovl" id="ovl"></div>
+  <div id="bannerBox"></div>
+
+  <!-- WELCOME -->
+  <section class="screen active" id="welcome">
+    <div class="center">
+      <div class="logo" id="biglogo"></div>
+      <h2>Better <span class="gt">Half</span></h2>
+      <p>Two halves. One private world.</p>
+      <button class="gbtn" id="gbtn" onclick="doLogin()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
+        Continue with Google
+      </button>
+      <div class="mu" style="margin-top:16px;display:flex;gap:6px;align-items:center"><i data-i="lock" data-c="s"></i>End-to-end encrypted · only you two can read it</div>
+      <div class="mu" id="modeNote" style="margin-top:8px;font-size:11px"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="screen" id="profile">
+    <div class="top"><h3>About you</h3></div>
+    <div class="body" style="padding-bottom:30px">
+      <div class="stepdots"><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="mu" style="margin-bottom:12px">Signed in as <b style="color:#fff" id="acctEmail"></b></div>
+      <label class="l">Your name</label><input class="field" id="myName" placeholder="Your name">
+      <label class="l">I am</label>
+      <div class="gpick" id="gpick"></div>
+      <label class="l">What do you call your partner?</label><input class="field" id="herName" placeholder="e.g. Jaan, Love, Baby">
+      <button class="btn" onclick="saveProfile()">Continue</button>
+    </div>
+  </section>
+
+  <!-- AVATAR -->
+  <section class="screen" id="avatar">
+    <div class="top"><button class="ib" id="avBack" onclick="back()"><i data-i="back"></i></button><h3>Your avatar</h3><button class="ib" onclick="avRandom()"><i data-i="shuffle"></i></button></div>
+    <div class="body" style="padding-bottom:30px">
+      <div class="avstage"><div class="pv" id="avPrev"></div></div>
+      <div class="chips" id="avExpr" style="justify-content:center;margin-bottom:12px"></div>
+      <div class="avtabs" id="avTabs"></div>
+      <div id="avPanel"></div>
+      <button class="btn" style="margin-top:8px" onclick="saveAvatar()">Save avatar</button>
+    </div>
+  </section>
+
+  <!-- INVITE -->
+  <section class="screen" id="invite">
+    <div class="top"><h3>Connect your half</h3></div>
+    <div class="body" style="padding-bottom:30px">
+      <div class="stepdots"><i></i><i></i><i class="on"></i><i></i></div>
+      <div class="seg"><button class="on" id="segA" onclick="invTab(0)">Invite</button><button id="segB" onclick="invTab(1)">I have a code</button></div>
+      <div id="invA">
+        <div class="card">
+          <b class="f" style="font-size:16px">Send your partner this code</b>
+          <div class="mu">She installs Better Half, signs in, and enters the code. You both get notified the moment you're connected.</div>
+          <div class="row" style="justify-content:center;gap:18px;margin:14px 0"><svg class="qr" id="qr" viewBox="0 0 21 21"></svg><div><div class="mu">Your code</div><div class="code gt" id="myCode">······</div><div class="mu">valid for 24 h</div></div></div>
+          <div class="share">
+            <button onclick="shareInvite('whatsapp')"><span class="glyph gg" style="width:38px;height:38px;border-radius:12px"><i data-i="chat" data-c="s"></i></span>WhatsApp</button>
+            <button onclick="shareInvite('sms')"><span class="glyph gc" style="width:38px;height:38px;border-radius:12px"><i data-i="mail" data-c="s"></i></span>SMS</button>
+            <button onclick="shareInvite('copy')"><span class="glyph gv" style="width:38px;height:38px;border-radius:12px"><i data-i="link" data-c="s"></i></span>Copy</button>
+          </div>
+        </div>
+        <div class="card row"><span class="pulse-dot"></span><div class="mu" id="invWait" style="display:flex;gap:8px;align-items:center"><span class="dot on" style="animation:pulse 1s infinite"></span>Waiting for your partner to enter the code…</div></div>
+      </div>
+      <div id="invB" style="display:none">
+        <div class="card" style="text-align:center">
+          <div class="mu">Enter the 6-digit code from your partner's phone</div>
+          <input class="field" id="codeIn" inputmode="numeric" style="text-align:center;font-size:28px;letter-spacing:10px;font-weight:800" maxlength="6" placeholder="······">
+          <div class="mu" id="demoCode" style="margin-bottom:8px"></div>
+          <button class="btn" onclick="redeem()"><i data-i="link" data-c="s"></i>Connect</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONNECTED -->
+  <section class="screen" id="connected">
+    <div class="center">
+      <div style="display:flex;align-items:flex-end;justify-content:center;height:220px;gap:0" id="conDuo"></div>
+      <h2 style="font-size:30px;margin-top:6px">You're connected</h2>
+      <p style="margin:6px 0 14px">with <b class="hn"></b>. Your phones now share a secret key.</p>
+      <div class="card" style="width:100%;font-size:13px;text-align:left"><div class="row"><span class="glyph gg" style="width:36px;height:36px;border-radius:11px"><i data-i="shield" data-c="s"></i></span><div><b>Safety number</b><div style="letter-spacing:2px;margin-top:2px;font-weight:800;font-family:Outfit" class="safety"></div></div></div><div class="mu" style="margin-top:6px">Matches on both phones = no one is in between.</div></div>
+      <button class="btn" onclick="go('perms',true)">Continue</button>
+    </div>
+  </section>
+
+  <!-- PERMISSIONS -->
+  <section class="screen" id="perms">
+    <div class="top"><h3>Stay connected</h3></div>
+    <div class="body" style="padding-bottom:30px">
+      <div class="stepdots"><i></i><i></i><i></i><i class="on"></i></div>
+      <div id="iosNote"></div>
+      <div class="permc"><span class="glyph gp"><i data-i="bell"></i></span><div><b>Notifications</b><div class="mu">Messages, touches, game turns, calls and alarms</div></div><button class="btn sm st" id="pNotif" onclick="askNotif()">Allow</button></div>
+      <div class="permc"><span class="glyph gc"><i data-i="mic"></i></span><div><b>Microphone</b><div class="mu">Voice notes, walkie-talkie and calls</div></div><button class="btn sm st" id="pMic" onclick="askMedia(false)">Allow</button></div>
+      <div class="permc"><span class="glyph gv"><i data-i="video"></i></span><div><b>Camera</b><div class="mu">Video calls and photos</div></div><button class="btn sm st" id="pCam" onclick="askMedia(true)">Allow</button></div>
+      <div class="mu" style="margin:6px 2px 16px">You can change these any time in Settings. Nothing is recorded or uploaded without you tapping a button.</div>
+      <button class="btn" onclick="finishOnboarding()">Start</button>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="home">
+    <div class="top"><div style="flex:1"><div class="mu">Good <span id="tod">evening</span>,</div><h3 style="font-size:24px"><span class="mn"></span></h3></div><button class="ib" onclick="startCall(false)"><i data-i="phone"></i></button><button class="ib" onclick="startCall(true)"><i data-i="video"></i></button><button class="ib" onclick="go('settings')"><i data-i="gear"></i></button></div>
+    <div class="body">
+      <div id="awayBox"></div>
+      <div class="stage2" id="stage"><svg class="bgsvg" id="stageBg" viewBox="0 0 360 430" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="stagehud"><span class="st"><span class="dot" id="pDot"></span><span id="pTxt">Offline</span></span><span class="st"><i data-i="room" data-c="s"></i>Our Room</span></div>
+        <div class="sa me" id="saMe"></div><div class="sa her" id="saHer"></div>
+      </div>
+      <div class="react" id="reactBar"></div>
+      <div class="qa">
+        <button class="qb" onclick="go('kiss')"><span class="o gp"><i data-i="kiss"></i></span>Thumb Kiss</button>
+        <button class="qb" onclick="nudge()"><span class="o go"><i data-i="zap"></i></span>Nudge</button>
+        <button class="qb" onclick="go('walkie')"><span class="o gc"><i data-i="radio"></i></span>Walkie</button>
+        <button class="qb" onclick="go('jar')"><span class="o gy"><i data-i="jar"></i></span>Love Jar</button>
+      </div>
+      <div class="card row" onclick="go('jar')" style="cursor:pointer"><span class="glyph gy"><i data-i="jar"></i></span><div style="flex:1"><b>Love Jar</b><div class="mu" id="jarSum">Notes for each other</div></div><i data-i="chev" data-c="s"></i></div>
+    </div>
+    <nav class="tabs"></nav>
+  </section>
+
+  <!-- CHAT -->
+  <section class="screen" id="chat">
+    <div class="wall" id="wall"></div>
+    <div class="chathead row">
+      <div class="mini" data-av="her" data-view="head"></div>
+      <div style="flex:1;min-width:0"><b class="hn f" style="font-size:16px"></b><div class="mu" id="chatSub" style="font-size:11.5px">offline</div></div>
+      <button class="ib" onclick="openSheet('wpSheet')"><i data-i="palette" data-c="s"></i></button>
+      <button class="ib" onclick="startCall(false)"><i data-i="phone" data-c="s"></i></button><button class="ib" onclick="startCall(true)"><i data-i="video" data-c="s"></i></button>
+    </div>
+    <div class="msgs" id="msgs"><div class="lock"><i data-i="lock" data-c="s"></i>End-to-end encrypted · stored only on your two phones</div></div>
+    <div class="replybar" id="replyBar"><div id="replyTxt"></div><button onclick="cancelReply()"><i data-i="close" data-c="s"></i></button></div>
+    <div class="drawer" id="stkDrawer"><div class="mu" style="margin-bottom:6px">Your avatar stickers</div><div class="stk" id="stk"></div></div>
+    <div class="drawer" id="attDrawer"><div class="att">
+      <label><span class="glyph gp"><i data-i="image"></i></span>Photo<input type="file" accept="image/*" hidden onchange="sendPhoto(this)"></label>
+      <label><span class="glyph gc"><i data-i="camera"></i></span>Camera<input type="file" accept="image/*" capture="environment" hidden onchange="sendPhoto(this)"></label>
+      <button onclick="armSecret()"><span class="glyph gv"><i data-i="lock"></i></span>Secret</button>
+      <button onclick="openSheet('fxSheet')"><span class="glyph gy"><i data-i="sparkle"></i></span>Effects</button>
+      <button onclick="go('kissprint')"><span class="glyph go"><i data-i="lips"></i></span>Kiss print</button>
+      <button onclick="go('jar')"><span class="glyph gg"><i data-i="jar"></i></span>Jar note</button>
+      <button onclick="sendLocation()"><span class="glyph gc"><i data-i="pin"></i></span>Location</button>
+      <button onclick="openSheet('wpSheet')"><span class="glyph gv"><i data-i="palette"></i></span>Wallpaper</button>
+    </div></div>
+    <div class="composer">
+      <button class="cb" onclick="toggleDrawer('attDrawer')"><i data-i="plus"></i></button>
+      <button class="cb" onclick="toggleDrawer('stkDrawer')"><i data-i="smile"></i></button>
+      <input type="text" id="txt" placeholder="Message…" oninput="syncSend();typing()" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="cb send" id="sendBtn"></button>
+      <div class="recbar" id="recBar"><span class="dot" style="background:#ef4444"></span><span id="recT">0:00</span><span class="mu" style="font-weight:700">Release to send · slide left to cancel</span></div>
+    </div>
+    <div style="height:env(safe-area-inset-bottom);background:rgba(15,10,30,.85)"></div>
+  </section>
+
+  <!-- TOUCH -->
+  <section class="screen" id="touch">
+    <div class="top"><h3>Touch</h3></div>
+    <div class="body">
+      <div class="mu" style="margin:-4px 2px 14px">Feel close, even when you're far apart</div>
+      <div class="tgrid">
+        <button class="tcard wide" onclick="go('hold')"><span class="glyph gc" style="width:56px;height:56px;border-radius:18px"><i data-i="hands" data-c="l"></i></span><div style="position:relative;z-index:1"><b>Hold Together</b><br><small>Both hold at the same moment and a light connects your phones</small></div></button>
+        <button class="tcard" onclick="go('kissprint')"><span class="glyph gp"><i data-i="lips"></i></span><b>Kiss Print</b><small>Leave lipstick kisses on her screen</small></button>
+        <button class="tcard" onclick="go('surprise')"><span class="glyph gy"><i data-i="wand"></i></span><b>Screen Surprise</b><small>Fireflies or petals float over her screen</small></button>
+        <button class="tcard" onclick="go('wish')"><span class="glyph gc"><i data-i="shoot"></i></span><b>Shooting Star</b><small>Send a wish across her night sky</small></button>
+        <button class="tcard" onclick="go('taps')"><span class="glyph gv"><i data-i="taps"></i></span><b>Love Taps</b><small>A secret rhythm only she can feel</small></button>
+      </div>
+    </div>
+    <nav class="tabs"></nav>
+  </section>
+
+  <!-- THUMB KISS -->
+  <section class="screen" id="kiss">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Thumb Kiss</h3></div>
+    <div class="mu" style="text-align:center;padding:0 30px;color:#fff;font-weight:700" id="kissHint"></div>
+    <div class="stage" id="kissArea"><canvas id="kcv" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+      <div class="orb her" id="tHer" style="opacity:0"><span class="hn"></span></div>
+      <div class="orb me" id="tMe" style="opacity:0"><span>You</span></div>
+      <div style="position:absolute;bottom:30px;left:0;right:0;font-weight:800;font-size:16px;font-family:Outfit" id="kissCount">Kisses today · 0</div>
+    </div>
+  </section>
+
+  <!-- HOLD -->
+  <section class="screen" id="hold">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Hold Together</h3></div>
+    <div class="stage">
+      <div style="font-family:Outfit;font-size:46px;font-weight:700" class="gt" id="holdT">0s</div>
+      <div class="mu" id="holdTxt" style="margin-bottom:40px">Press and hold your circle</div>
+      <div class="hold2"><div class="hc" id="hcMe" style="--col:rgba(168,85,247,.7)"><div class="mini" data-av="me" data-view="head" style="width:64px;height:64px"></div><b style="font-size:12px;margin-top:4px">You</b></div><div class="beam" id="beam"></div><div class="hc" id="hcHer" style="--col:rgba(255,77,141,.7)"><div class="mini" data-av="her" data-view="head" style="width:64px;height:64px"></div><b style="font-size:12px;margin-top:4px" class="hn"></b></div></div>
+      <div id="holdHeart" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-30%) scale(0);transition:.5s cubic-bezier(.3,1.5,.5,1);width:70px;height:70px;filter:drop-shadow(0 0 20px #ff4d8d)"></div>
+      <div class="mu" style="margin-top:50px" id="holdBest"></div>
+    </div>
+  </section>
+
+  <!-- WALKIE -->
+  <section class="screen" id="walkie">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Walkie-Talkie</h3></div>
+    <div class="stage">
+      <div class="mini" data-av="her" data-view="head" id="wkAv" style="width:90px;height:90px;margin-bottom:8px"></div>
+      <div class="mu" id="wkState"></div>
+      <div class="wbars" id="wbars"></div>
+      <div class="wt" id="wtBtn"><span class="rg"></span><span class="rg"></span><span class="rg"></span><i data-i="mic" data-c="xl"></i><span id="wtLbl">Hold to talk</span></div>
+      <div class="mu" style="margin-top:22px;max-width:270px">If her app is open, your voice plays out loud right away. If not, she gets it as a voice notification.</div>
+    </div>
+  </section>
+
+  <!-- KISS PRINT -->
+  <section class="screen" id="kissprint">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Kiss Print</h3><button class="ib" onclick="clearLips()"><i data-i="trash"></i></button></div>
+    <div class="cols" id="lipCols"></div>
+    <div class="kissarea" id="kissPad"><div class="mu" id="kpHint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none"><i data-i="lips" data-c="xl"></i>Tap or press to leave a kiss</div></div>
+    <div style="padding:0 16px calc(22px + env(safe-area-inset-bottom))"><button class="btn" onclick="sendLips()"><i data-i="send" data-c="s"></i>Send kisses to her screen</button></div>
+  </section>
+
+  <!-- SURPRISE -->
+  <section class="screen" id="surprise">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Screen Surprise</h3></div>
+    <div class="body" style="padding-bottom:30px">
+      <div class="minis"><div class="apps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><canvas id="scv" width="200" height="360"></canvas></div>
+      <div class="mu" style="text-align:center;margin:8px 0">Preview of her screen</div>
+      <div class="chips" id="sfx" style="justify-content:center;margin-bottom:12px"></div>
+      <button class="btn" onclick="sendSurprise()"><i data-i="wand" data-c="s"></i>Play it on her screen</button>
+    </div>
+  </section>
+
+  <!-- TAPS -->
+  <section class="screen" id="taps">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Love Taps</h3></div>
+    <div class="body" style="padding-bottom:30px;display:flex;flex-direction:column;align-items:center">
+      <div class="tappad" id="tapPad"><i data-i="taps" data-c="xl"></i><span id="tapLbl">Tap a rhythm</span></div>
+      <div class="rhythm" id="rhythm"></div>
+      <div style="font-weight:800;min-height:22px;font-family:Outfit" id="tapOut"></div>
+      <div class="legend" id="tapLegend"></div>
+    </div>
+  </section>
+
+  <!-- WISH -->
+  <section class="screen" id="wish">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Shooting Star</h3></div>
+    <div class="body" style="padding-bottom:30px">
+      <canvas id="skyc" width="352" height="330"></canvas>
+      <div class="mu" style="text-align:center;margin:8px 0" id="skyN"></div>
+      <input class="field" id="wishIn" placeholder="Make a wish for us…">
+      <button class="btn" onclick="shootStar()"><i data-i="shoot" data-c="s"></i>Send it across her sky</button>
+    </div>
+  </section>
+
+  <!-- PLAY -->
+  <section class="screen" id="play">
+    <div class="top"><h3>Play</h3></div>
+    <div class="body">
+      <div id="invList"></div>
+      <div class="card row" style="justify-content:space-around;text-align:center"><div><div class="big gt" id="winsMe">0</div><div class="mu">Your wins</div></div><i data-i="trophy" data-c="l" style="color:#facc15"></i><div><div class="big" style="color:#ff9cc2" id="winsHer">0</div><div class="mu"><span class="hn"></span>'s wins</div></div></div>
+      <div id="gameList"></div>
+    </div>
+    <nav class="tabs"></nav>
+  </section>
+
+  <section class="screen" id="carom">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Carom</h3><button class="ib" onclick="gameInvite('carom')"><i data-i="send"></i></button><button class="ib" onclick="caromNew(true)"><i data-i="refresh"></i></button></div>
+    <div class="body" style="padding-top:0;padding-bottom:30px">
+      <div class="hud"><span id="cMe">You 0</span><span id="cTurn" class="turnon">Your turn</span><span id="cHer">Her 0</span></div>
+      <canvas id="ccv" class="gcv" width="704" height="704"></canvas>
+      <div class="ctrl"><span>Striker</span><input type="range" class="slider" id="cSlide" min="0" max="1000" value="500"></div>
+      <div class="mu" style="margin-top:6px;line-height:1.55">1. Slide the striker or drag it along your line<br>2. Press the striker and <b style="color:#fff">pull back</b>. The ring shows the power<br>3. Let go to shoot. Pocket your colour to go again · queen = +3</div>
+    </div>
+  </section>
+
+  <section class="screen" id="bball">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Hoops</h3><button class="ib" onclick="gameInvite('bball')"><i data-i="send"></i></button><button class="ib" onclick="bbNew()"><i data-i="refresh"></i></button></div>
+    <div class="body" style="padding-top:0;padding-bottom:30px">
+      <div class="hud"><span id="bbS">Score 0</span><span id="bbShots" class="turnon">Ball 1 / 10</span><span style="color:#ff9cc2" id="bbHer">Her best 0</span></div>
+      <canvas id="bcv" class="gcv" width="704" height="900"></canvas>
+      <div class="mu" style="text-align:center;margin-top:8px">Swipe up from the ball to shoot. Two in a row and you're on fire. Beat her best!</div>
+    </div>
+  </section>
+
+  <section class="screen" id="hockey">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Air Hockey</h3><button class="ib" onclick="gameInvite('hockey')"><i data-i="send"></i></button><button class="ib" onclick="hkRestart()"><i data-i="refresh"></i></button></div>
+    <div class="body" style="padding-top:0;padding-bottom:30px">
+      <div class="hud"><span style="color:#67e8f9">You <span id="hkMe">0</span></span><span class="turnon" id="hkMsg">First to 5</span><span style="color:#ff9cc2"><span id="hkOpp">Bot</span> <span id="hkHer">0</span></span></div>
+      <div style="position:relative"><canvas id="hcv" class="gcv" width="704" height="960"></canvas><div class="waiting" id="hkWait" style="display:none"></div></div>
+    </div>
+  </section>
+
+  <section class="screen" id="ttt">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Tic-Tac-Toe</h3><button class="ib" onclick="gameInvite('ttt')"><i data-i="send"></i></button><button class="ib" onclick="tttNew()"><i data-i="refresh"></i></button></div>
+    <div class="body" style="text-align:center;padding-top:0;padding-bottom:30px">
+      <div class="seg" id="tttModes"><button onclick="tttNew('classic')">Classic</button><button onclick="tttNew('infinite')">Infinite</button><button onclick="tttNew('big')">Big 5×5</button></div>
+      <div class="hud"><span style="color:#67e8f9">You <span id="tW1">0</span></span><span id="tttMsg" class="turnon"></span><span style="color:#ff9cc2">Her <span id="tW2">0</span></span></div>
+      <div class="board" id="board"></div>
+      <div class="mu" id="tttRule"></div>
+    </div>
+  </section>
+
+  <section class="screen" id="memory">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Memory Match</h3><button class="ib" onclick="gameInvite('memory')"><i data-i="send"></i></button><button class="ib" onclick="memNew()"><i data-i="refresh"></i></button></div>
+    <div class="body" style="padding-top:0;padding-bottom:30px">
+      <div class="hud"><span style="color:#6ee7b7">You <span id="mS1">0</span></span><span id="mTurn" class="turnon"></span><span style="color:#ff9cc2">Her <span id="mS2">0</span></span></div>
+      <div class="mgrid" id="mgrid"></div>
+      <div class="mu" style="text-align:center">Match a pair and you go again.</div>
+    </div>
+  </section>
+
+  <section class="screen" id="askme">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Ask Me</h3></div>
+    <div class="body" style="padding-top:0;padding-bottom:30px">
+      <div class="card" id="amMeter"></div>
+      <div class="seg"><button class="on" id="amA" onclick="amTab(0)">To answer</button><button id="amB" onclick="amTab(1)">Ask</button><button id="amC" onclick="amTab(2)">History</button></div>
+      <div id="amPane"></div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="screen" id="plans">
+    <div class="top"><h3>Plans</h3><button class="ib" onclick="planAdd()"><i data-i="plus"></i></button></div>
+    <div class="body">
+      <div class="seg"><button class="on" id="plC" onclick="plTab(0)">Calendar</button><button id="plG" onclick="plTab(1)">Goals</button><button id="plR" onclick="plTab(2)">Routines</button></div>
+      <div id="plCal"></div>
+      <div id="plGoals" style="display:none"></div>
+      <div id="plRoutines" style="display:none"></div>
+    </div>
+    <nav class="tabs"></nav>
+  </section>
+
+  <!-- JAR -->
+  <section class="screen" id="jar">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Love Jar</h3></div>
+    <div class="body" style="padding-bottom:30px">
+      <div class="jarbox" onclick="pullNote()" id="jarBox"></div>
+      <div class="mu" style="text-align:center;margin-bottom:6px">Tap the jar for a random open note</div>
+      <div id="noteOut"></div>
+      <div class="seg"><button class="on" id="jA" onclick="jarTab(0)">For me</button><button id="jB" onclick="jarTab(1)">I wrote</button></div>
+      <div id="jarList"></div>
+      <div class="card">
+        <b class="f">Write a note for her jar</b>
+        <textarea class="field" id="jarTxt" rows="3" style="resize:none" placeholder="Something only she should read…"></textarea>
+        <div class="seg" id="jarLock"><button class="on" onclick="jarMode(0,this)">Open anytime</button><button onclick="jarMode(1,this)">Unlock at</button><button onclick="jarMode(2,this)">Password</button></div>
+        <input class="field" type="datetime-local" id="jarAt" style="display:none">
+        <div id="jarPwBox" style="display:none"><input class="field" id="jarPw" placeholder="Password (e.g. our first movie)"><input class="field" id="jarHint" placeholder="Hint for her (optional)"></div>
+        <button class="btn" onclick="addJar()"><i data-i="jar" data-c="s"></i>Drop it in her jar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="screen" id="settings">
+    <div class="top"><button class="ib" onclick="back()"><i data-i="back"></i></button><h3>Settings</h3></div>
+    <div class="body" style="padding-bottom:40px">
+      <div class="card row" onclick="go('avatar')" style="cursor:pointer"><div class="mini" data-av="me" data-view="head" style="width:56px;height:56px"></div><div style="flex:1"><b class="mn f" style="font-size:17px"></b><div class="mu">Edit avatar</div></div><i data-i="chev"></i></div>
+      <div class="card">
+        <label class="l">Your name</label><input class="field" id="setName">
+        <label class="l">What you call your partner</label><input class="field" id="setHer">
+        <button class="btn sm" onclick="saveSettingsNames()">Save</button>
+      </div>
+      <div class="sect">Our dates</div>
+      <div class="card">
+        <label class="l">Together since (your date)</label><input class="field" type="date" id="since" onchange="saveDates()">
+        <label class="l">Anniversary</label><input class="field" type="date" id="anniv" onchange="saveDates()">
+        <div class="mu" id="herDates"></div>
+      </div>
+      <div class="sect">Connection</div>
+      <div class="card" style="padding:4px 15px">
+        <div class="set"><span class="glyph gg" style="width:36px;height:36px;border-radius:11px"><i data-i="users" data-c="s"></i></span><div><b>Partner</b><span class="mu" id="setPartner"></span></div></div>
+        <div class="set"><span class="glyph gv" style="width:36px;height:36px;border-radius:11px"><i data-i="shield" data-c="s"></i></span><div><b>Safety number</b><span class="mu safety"></span></div></div>
+        <div class="set"><span class="glyph gc" style="width:36px;height:36px;border-radius:11px"><i data-i="refresh" data-c="s"></i></span><div><b>Sync</b><span class="mu" id="setSync"></span></div></div>
+      </div>
+      <div class="sect">Permissions</div>
+      <div class="card" style="padding:4px 15px">
+        <div class="set"><span class="glyph gp" style="width:36px;height:36px;border-radius:11px"><i data-i="bell" data-c="s"></i></span><div><b>Notifications</b><span class="mu" id="setNotif"></span></div><button class="btn sm" onclick="askNotif()">Allow</button></div>
+        <div class="set"><span class="glyph gc" style="width:36px;height:36px;border-radius:11px"><i data-i="mic" data-c="s"></i></span><div><b>Microphone &amp; camera</b><span class="mu" id="setMedia"></span></div><button class="btn sm" onclick="askMedia(true)">Allow</button></div>
+        <div class="set"><span class="glyph gy" style="width:36px;height:36px;border-radius:11px"><i data-i="radio" data-c="s"></i></span><div><b>Walkie auto-play</b><span class="mu">Off = shows a play button</span></div><input type="checkbox" class="sw" id="setWalkie" checked onchange="S.set('walkieAuto',this.checked)"></div>
+      </div>
+      <button class="btn gh" style="color:#fb7185;margin-bottom:10px" onclick="confirmBox('Unpair from your partner? Both phones keep their own history.',unpair)">Unpair</button>
+      <button class="btn gh" onclick="confirmBox('Sign out of Better Half on this phone?',signOut)">Sign out</button>
+    </div>
+  </section>
+
+  <!-- CALL -->
+  <section class="screen" id="call">
+    <div class="callbg"></div>
+    <video class="rv" id="rv" autoplay playsinline style="display:none"></video>
+    <div class="callv" id="callV"><div class="a" id="callVA" style="width:200px;height:400px"></div></div>
+    <div class="vctop" id="vcTop"><span class="hn"></span><small id="vcT">0:00</small></div>
+    <div class="pip" id="pip"><video class="lv" id="lv" autoplay playsinline muted style="display:none"></video><div id="pipAv" style="width:100%;height:100%"></div></div>
+    <div class="callinfo" id="callInfo">
+      <div class="callav ripple" id="callAv"></div>
+      <div style="font-size:28px;font-weight:700" class="hn f"></div>
+      <div style="opacity:.85;margin-top:4px" id="callState">Calling…</div>
+      <div class="mu" style="margin-top:8px;display:flex;gap:5px;justify-content:center;align-items:center"><i data-i="lock" data-c="s"></i>End-to-end encrypted · phone to phone</div>
+    </div>
+    <audio id="ra" autoplay></audio>
+    <div class="callbtns" id="callBtns"></div>
+  </section>
+
+  <!-- alarm -->
+  <div class="alarm" id="alarmScr"><div class="mu" style="font-size:14px">Routine</div><div class="clk" id="alClk">7:00</div><b class="f" style="font-size:22px" id="alName"></b><div class="mu" id="alWho" style="margin-top:4px"></div><div class="ring2"><i data-i="alarm" data-c="xl"></i></div><div class="row" style="width:100%;gap:10px"><button class="btn gh" onclick="alarmAct('snooze')">Snooze 10 min</button><button class="btn" onclick="alarmAct('done')"><i data-i="check" data-c="s"></i>Done</button></div></div>
+
+  <!-- SHEETS -->
+  <div class="sheetbg" id="gsheet" onclick="bgClose(event)"><div class="sheet" style="background:#fff;color:#222">
+    <div style="font-weight:800;font-size:17px">Choose an account</div>
+    <div style="color:#666;font-size:13px;margin-bottom:10px">to continue to Better Half</div>
+    <div class="acct" onclick="pickDemoAccount()" style="color:#222"><div class="av0" style="background:#4f46e5" id="gAvL">A</div><div><b id="gName">Demo account</b><div style="color:#666;font-size:13px" id="gEmail"></div></div></div>
+  </div></div>
+  <div class="sheetbg" id="msgSheet" onclick="bgClose(event)"><div class="sheet">
+    <div class="reactbar" id="reactBarMsg"></div>
+    <button class="mi" onclick="menuAct('reply')"><i data-i="reply"></i>Reply</button>
+    <button class="mi" onclick="menuAct('star')"><i data-i="star"></i>Save to favourites</button>
+    <button class="mi" onclick="menuAct('copy')"><i data-i="copy"></i>Copy</button>
+    <button class="mi" id="miDel" onclick="menuAct('del')" style="color:#fb7185"><i data-i="trash"></i>Delete for both</button>
+  </div></div>
+  <div class="sheetbg" id="fxSheet" onclick="bgClose(event)"><div class="sheet">
+    <h4>Send with effect</h4>
+    <div class="mu" style="margin-bottom:8px">Type a message first, or send just the effect</div>
+    <button class="mi" onclick="sendFx('hearts','Hearts rain')"><span class="glyph gp" style="width:36px;height:36px;border-radius:11px"><i data-i="heart" data-c="s"></i></span>Hearts rain</button>
+    <button class="mi" onclick="sendFx('confetti','Confetti')"><span class="glyph gy" style="width:36px;height:36px;border-radius:11px"><i data-i="sparkle" data-c="s"></i></span>Confetti</button>
+    <button class="mi" onclick="sendFx('stars','Starfall')"><span class="glyph gc" style="width:36px;height:36px;border-radius:11px"><i data-i="star" data-c="s"></i></span>Starfall</button>
+  </div></div>
+  <div class="sheetbg" id="wpSheet" onclick="bgClose(event)"><div class="sheet">
+    <h4>Chat wallpaper</h4><div class="mu" style="margin-bottom:12px">Only changes your view. She picks her own.</div>
+    <div class="wps" id="wps"></div>
+  </div></div>
+  <div class="sheetbg" id="edSheet" onclick="bgClose(event)"><div class="sheet" id="edBody"></div></div>
+  <div class="sheetbg" id="daySheet" onclick="bgClose(event)"><div class="sheet" id="dayBody"></div></div>
+  <div class="sheetbg" id="pwSheet" onclick="bgClose(event)"><div class="sheet">
+    <h4>Password-locked note</h4><div class="mu" id="pwHint" style="margin-bottom:8px"></div>
+    <input class="field" id="pwIn" placeholder="Enter password"><button class="btn" onclick="tryPw()"><i data-i="key" data-c="s"></i>Unlock</button>
+  </div></div>
+  <div class="sheetbg" id="cfSheet" onclick="bgClose(event)"><div class="sheet"><h4 id="cfTxt"></h4><div class="confirm"><button class="btn gh" onclick="closeSheets()">Cancel</button><button class="btn" id="cfOk">Yes</button></div></div></div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/avatar.js"></script>
+<script src="js/bus.js"></script>
+<script src="js/app.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/touch.js"></script>
+<script src="js/games.js"></script>
+<script src="js/plans.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

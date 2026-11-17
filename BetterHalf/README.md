@@ -1,54 +1,70 @@
 # Better Half 💞
 
-A private app for two people: you and your partner. Chat, calls, touch features, games and shared plans. Everything is end-to-end encrypted and stored **only on your two phones**.
+A private app for two people. It has chat, voice and video calls, live touches, synced games and shared calendars. Everything you send is **end-to-end encrypted**, and your chat history lives **only on your two phones**.
 
-> **Status:** design prototype (v3). Open [`prototype/index.html`](prototype/index.html) in any browser to try every screen. The Android app (Flutter) is built after the design is finalised.
+One web app runs everywhere:
 
-## Features in the prototype
-
-| Area | What's in it |
+| | How you get it |
 |---|---|
-| **Onboarding** | Google sign-in → name and pet name → avatar builder → invite by WhatsApp, SMS or link, or connect with a QR / 6-digit code. You both get a notification at each step. |
-| **Home** | Both avatars, online status, one-tap chat / voice call / video call, quick touches, together-since and anniversary counters, next routine, Ask Me, Love Jar |
-| **Chat** | Text, voice notes (hold the mic), photos, avatar stickers, reactions, reply, delete for both, secret messages, send effects, kiss prints, location, chat wallpapers |
-| **Calls** | Voice and video calls, phone to phone (WebRTC), with full-screen ringing |
-| **Touch** | Our Room (shared avatar room: hug, kiss, high five, dance, cuddle, poke, wave, gift), Thumb Kiss, Nudge, Hold Together, Walkie-Talkie, Kiss Print, Screen Surprise, Love Taps, Shooting Star |
-| **Play** | Carom (real physics), Hoops (basketball), Air Hockey, Tic-Tac-Toe (Classic / Infinite / 5×5), Memory Match, Ask Me (you write questions for each other) |
-| **Plans** | Love Goals (shared to-dos, no deadline) and Routines (repeat on chosen days, with alarms on both phones and a "done" notification) |
-| **Love Jar** | Notes that are open, unlock at a date and time, or need a password |
-| **Settings** | Each partner's own dates, notification channels, app lock, encrypted backup to your own Google Drive, safety number |
+| **Android** | Download `BetterHalf.apk` from the [betterhalf-latest release](https://github.com/XaviourZone/Remote/releases/tag/betterhalf-latest) and install it |
+| **iPhone** | Open the app link in **Safari** → Share → **Add to Home Screen** → open it from the new icon |
+| **Try both phones on a computer** | Open [`web/demo.html`](web/demo.html): two phones side by side that really sync with each other |
 
-## How it works (no server keeps your data)
+## What's inside
 
-- **Google sign-in** (Firebase Auth) only proves who you are.
-- Messages are **encrypted on the phone** (X25519 + XChaCha20-Poly1305). Firebase passes on the sealed envelope and **deletes it once it's delivered**.
-- **Calls and the walkie-talkie** go directly phone to phone (WebRTC). A small TURN relay is used only when a mobile network blocks a direct connection.
-- **Notifications:** Firebase Cloud Messaging wakes the other phone for messages, touches, game turns, alarms and calls.
-- History, photos, goals and routines live in an encrypted database **on each phone**.
+- **Sign-in and pairing:** Google sign-in → name and gender → full-body avatar → invite code or QR → safety number check → permissions. If the app is closed, it reopens where you left off.
+- **Home, "Our Room":** both avatars in an animated room. React with hug, kiss, cuddle, "love you", high five, dance, poke, wave or gift, and your partner's avatar does it on their phone. If they're offline, it's queued and replayed when they come back ("While you were away"). Quick access to Thumb Kiss, Nudge, Walkie-Talkie and Love Jar.
+- **Chat:** text, voice notes, photos, avatar stickers, reactions, reply, delete for both, secret messages (they vanish after being read), effects, location, wallpapers, delivered and read ticks, a typing indicator.
+- **Calls:** voice and video, phone to phone (WebRTC), with mute, speaker, camera on/off and flip.
+- **Touch:** Hold Together (live), Kiss Print, Screen Surprise, Shooting Star and Love Taps. Each one shows up on your partner's screen.
+- **Play:** Carom (each shot plays out on both phones), Hoops (beat each other's best score), Air Hockey (live, or against a bot if your partner isn't on that screen), Tic-Tac-Toe (Classic, Infinite or 5×5), Memory Match, and **Ask Me** (you write 3-option questions for each other, with a "how well you know each other" score). Game invites and "your turn" notifications included.
+- **Plans:** **his and her calendars** with sticky notes for each day (you can only edit your own), **Love Goals**, and **Routines** that repeat on chosen days, ring as alarms, save drafts automatically, and notify your partner when one of you marks them done.
+- **Love Jar:** notes that are open, unlock at a date and time, or need a password (the note is encrypted with that password).
 
-## Planned tech stack
+## Test mode vs real phones
 
-Flutter 3 · Riverpod · drift + SQLCipher · cryptography · firebase_auth + google_sign_in · cloud_firestore / firebase_database / firebase_messaging · flutter_webrtc · flutter_local_notifications + android_alarm_manager_plus · vibration
+Out of the box, the app runs in **test mode**: the two phones in `demo.html` sync through your browser. To use it on two real phones, connect it to a free Firebase project.
 
-## Installing on Android
+### Connect Firebase (about 15 minutes, free)
 
-When the app is built, the APK goes on this repo's **Releases** page. On the phone: download the APK → open it → allow "Install unknown apps" for your browser → Install. Do this on both phones.
+1. Go to **console.firebase.google.com** → **Add project** (Google Analytics not needed).
+2. **Build → Authentication → Get started → Sign-in method → Google → Enable.**
+   Under **Settings → Authorized domains**, add `xaviourzone.github.io`.
+3. **Build → Realtime Database → Create database** (pick the closest region) → start in **locked mode**.
+   Open the **Rules** tab and paste the contents of [`firebase/database.rules.json`](firebase/database.rules.json) → **Publish**.
+4. **Project settings → General → Your apps → Web (</>)** → register the app → copy the `firebaseConfig` object.
+5. Paste it into [`web/firebase-config.js`](web/firebase-config.js) as `window.BH_FIREBASE = {…}`.
+6. *(Notifications while the app is closed)* **Project settings → Cloud Messaging → Web Push certificates → Generate key pair**, then paste the key as `window.BH_VAPID = "…"`.
+   Deploy the small function in [`firebase/functions`](firebase/functions) with `firebase deploy --only functions`. This needs the Blaze plan, but stays inside the free allowance for two people.
 
-## What about iPhone?
+The web config is not a secret. The database rules make sure only the two of you can read your couple's data, and the contents are end-to-end encrypted anyway.
 
-The same Flutter code also builds for iPhone, but Apple makes installing outside the App Store harder:
+## Publishing (one-time)
 
-| Option | Cost | What you get |
-|---|---|---|
-| **Free Apple ID + a Mac with Xcode** | Free | Installs on your own iPhone, but the app **stops opening after 7 days** until you reinstall it from the Mac. **Push notifications don't work** on a free account, so nudges and calls only arrive while the app is open. |
-| **Apple Developer Program** | US$99 / year | Installs last 1 year, push notifications work, and you can use **TestFlight** to send the app to her iPhone with a link. This is the recommended choice if either of you uses an iPhone. |
-| **No Mac?** | — | A cloud build service (e.g. Codemagic) can build the iPhone version, but you still need the Apple Developer Program to install it. |
+1. Merge the `better-half` branch into `main`.
+2. Repo **Settings → Pages → Source: GitHub Actions**. The **Better Half – publish web app** workflow then publishes `web/` to `https://xaviourzone.github.io/Remote/`.
+3. The **Better Half – build Android APK** workflow builds the APK and attaches it to the `betterhalf-latest` release.
+   - Optional: to keep the same signature between updates, add the secrets `SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD`. These are the same secret names as universal-remote, so the same key works.
+   - Optional: to hide the small address bar at the top of the Android app, create a repo named **XaviourZone.github.io** containing `.well-known/assetlinks.json`, using the SHA-256 fingerprint printed by the build.
 
-**Recommendation:** if you both use Android, no Apple account is needed. If one of you uses an iPhone, join the Apple Developer Program and install through TestFlight.
+## iPhone notes
 
-## Roadmap
+- Web notifications on iPhone need iOS 16.4 or newer, and only work after **Add to Home Screen**. The app shows these steps during setup.
+- iPhones don't allow web apps to vibrate, so touches show on screen and play a sound but don't buzz.
+- When the app is closed, a call arrives as a notification rather than a full-screen ringing screen.
+- A native iPhone app would need the Apple Developer Program (US$99/year) and a Mac. The web app avoids both.
 
-1. **Foundation:** Google login, invite + pairing, encryption, chat, notifications
-2. **Feel close:** Touch tab, avatars, Our Room, voice and video calls, walkie-talkie
-3. **Play:** Carom, Hoops, Air Hockey, Tic-Tac-Toe, Memory Match, Ask Me
-4. **Plans and polish:** goals, routines and alarms, Love Jar, backup, app lock, home-screen widget, release APK
+## How the data is kept
+
+- **On each phone (local storage):** chat history, photos, voice notes, wallpaper, drafts.
+- **In Firebase, encrypted:** a short-lived inbox (each item is deleted as soon as the partner's phone receives it), shared state (calendars, goals, routines, jar notes, game boards), presence and live game positions.
+- **Keys:** each phone creates its own key pair. The two phones agree on a shared key (ECDH P-256 → AES-GCM). The safety number lets you confirm both phones have the same key.
+
+## Files
+
+```
+web/            the app (PWA): index.html, css/, js/, sw.js, manifest, icons/
+web/demo.html   two-phone test page
+firebase/       database rules + optional push-notification function
+android/        Android wrapper (Trusted Web Activity) built by GitHub Actions
+```
