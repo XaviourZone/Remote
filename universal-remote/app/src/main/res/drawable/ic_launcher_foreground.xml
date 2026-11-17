@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- remote body -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M44,40 h20 a6,6 0 0 1 6,6 v34 a6,6 0 0 1 -6,6 h-20 a6,6 0 0 1 -6,-6 v-34 a6,6 0 0 1 6,-6 z" />
+    <!-- power button -->
+    <path android:fillColor="#FFE53935"
+        android:pathData="M54,46 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <!-- keys -->
+    <path android:fillColor="#FF1F5FBF"
+        android:pathData="M46,56 h5 v5 h-5 z M57,56 h5 v5 h-5 z M46,65 h5 v5 h-5 z M57,65 h5 v5 h-5 z M46,74 h16 v5 h-16 z" />
+    <!-- IR waves -->
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineCap="round"
+        android:pathData="M46,32 q8,-6 16,0 M41,26 q13,-10 26,0" />
+</vector>

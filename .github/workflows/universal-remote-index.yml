@@ -1,0 +1,36 @@
+name: Universal Remote – refresh remote library index
+
+# Rebuilds universal-remote/database/index.json from the latest Flipper-IRDB every week,
+# so the app finds newly added remotes without an app update.
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Clone Flipper-IRDB
+        run: git clone --depth 1 https://github.com/Lucaslhm/Flipper-IRDB.git "$RUNNER_TEMP/irdb"
+      - name: Build index
+        run: python3 universal-remote/tools/build_index.py "$RUNNER_TEMP/irdb" universal-remote/database/index.json Lucaslhm/Flipper-IRDB main
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Ignore a timestamp-only difference.
+          git show HEAD:universal-remote/database/index.json > "$RUNNER_TEMP/old.json"
+          if python3 -c "import json,sys; a=json.load(open(sys.argv[1])); b=json.load(open(sys.argv[2])); a.pop('generated'); b.pop('generated'); sys.exit(0 if a==b else 1)" "$RUNNER_TEMP/old.json" universal-remote/database/index.json; then
+            echo "No new remotes"; exit 0
+          fi
+          git add universal-remote/database/index.json
+          git commit -m "Update remote library index"
+          git push

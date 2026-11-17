@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.UniversalRemote" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/bg</item>
+    </style>
+    <color name="bg">#FF101418</color>
+    <color name="ic_bg">#FF1F5FBF</color>
+</resources>
