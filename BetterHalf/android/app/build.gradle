@@ -11,8 +11,8 @@ android {
         applicationId 'com.xaviourzone.betterhalf'
         minSdk 21
         targetSdk 34
-        versionCode (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
-        versionName '1.0.' + (System.getenv('GITHUB_RUN_NUMBER') ?: '0')
+        versionCode = Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+        versionName = '1.0.' + (System.getenv('GITHUB_RUN_NUMBER') ?: '0')
         manifestPlaceholders = [hostName: hostName, launchUrl: launchUrl]
         resValue 'string', 'asset_statements', "[{\\\"relation\\\":[\\\"delegate_permission/common.handle_all_urls\\\"],\\\"target\\\":{\\\"namespace\\\":\\\"web\\\",\\\"site\\\":\\\"https://${hostName}\\\"}}]"
     }
