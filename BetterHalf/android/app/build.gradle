@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+
+// The web app this APK opens. Change it if you host Better Half somewhere else.
+def launchUrl = System.getenv('BH_URL') ?: 'https://xaviourzone.github.io/Remote/'
+def hostName = new URL(launchUrl).host
+
+android {
+    namespace 'com.xaviourzone.betterhalf'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'com.xaviourzone.betterhalf'
+        minSdk 21
+        targetSdk 34
+        versionCode = Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+        versionName = '1.0.' + (System.getenv('GITHUB_RUN_NUMBER') ?: '0')
+        manifestPlaceholders = [hostName: hostName, launchUrl: launchUrl]
+        resValue 'string', 'asset_statements', "[{\\\"relation\\\":[\\\"delegate_permission/common.handle_all_urls\\\"],\\\"target\\\":{\\\"namespace\\\":\\\"web\\\",\\\"site\\\":\\\"https://${hostName}\\\"}}]"
+    }
+    signingConfigs {
+        release {
+            def ks = System.getenv('SIGNING_KEYSTORE_PATH')
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv('SIGNING_STORE_PASSWORD')
+                keyAlias System.getenv('SIGNING_KEY_ALIAS')
+                keyPassword System.getenv('SIGNING_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig System.getenv('SIGNING_KEYSTORE_PATH') ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}
